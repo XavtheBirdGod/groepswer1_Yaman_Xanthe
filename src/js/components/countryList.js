@@ -2,7 +2,6 @@ export async function showCountries() {
     const card = document.getElementById("country_list");
 
     try {
-        const name = await fetch("https://restcountries.com/v3.1/all?fields=name")
         const res = await fetch(`https://restcountries.com/v3.1/name/${name.common}`);
         if (!res.ok) throw new Error("Fout bij laden JSON");
 
@@ -10,7 +9,6 @@ export async function showCountries() {
 
         const countryList = data.map(c => {
             const image = c.flags.png;
-
             return `
                 <div class="shadow rounded">
                     <div>
