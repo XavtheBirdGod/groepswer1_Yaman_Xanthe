@@ -1,27 +1,29 @@
-const COUNTRIES_API_URL = "https://restcountries.com/v3.1/all";
+const COUNTRIES_API_URL = "https://restcountries.com/v3.1/all?fields=name,capital,region,population,flags,latlng,languages,cca3";
+const CURRENCY_API_URL  = "https://open.er-api.com/v6/latest/EUR";
 
-/**
- * Haalt alle landen op via de REST Countries API.
- * @returns {Promise<Array>} array van landen
- */
 export async function fetchAllCountries() {
     try {
-        const res = await fetch(COUNTRIES_API_URL);
+        const [resCountries, resRates] = await Promise.all([
+            fetch(COUNTRIES_API_URL),
+            fetch(CURRENCY_API_URL)
+        ]);
 
-        if (!res.ok) {
-            throw new Error(`API error: ${res.status} ${res.statusText}`);
-        }
+        if (!resCountries.ok) throw new Error("REST Countries API error");
+        if (!resRates.ok) throw new Error("Currency API error");
 
-        const data = await res.json();
+        const countries = await resCountries.json();
+        const rateData  = await resRates.json();
 
-        // REST Countries returns an array, but we guard against trash responses anyway
-        if (!Array.isArray(data)) {
-            throw new Error("API returned iets dat geen array is");
-        }
+        // attach exchange rates per country
+        countries.forEach(country => {
+            const currencyCode = Object.keys(country.currencies ?? {})[0] || null;
+            country.exchangeRate = currencyCode ? rateData.rates[currencyCode] : null;
+        });
 
-        return data;
-    } catch (err) {
-        console.error("fetchAllCountries() failed:", err);
-        throw err;
+        return countries;
+
+    } catch (e) {
+        console.error("fetchAllCountries() failed:", e);
+        throw e;
     }
 }

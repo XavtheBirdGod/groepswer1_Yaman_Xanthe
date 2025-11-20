@@ -1,23 +1,23 @@
+import { fetchAllCountries } from "../services/countriesService";
+
 export async function showCountries() {
     const card = document.getElementById("country_list");
 
     try {
-        const res = await fetch(`https://restcountries.com/v3.1/name/${name.common}`);
-        if (!res.ok) throw new Error("Fout bij laden JSON");
+        // Wait for countries from your service
+        const countries = await fetchAllCountries();
 
-        const data = await res.json();
-
-        const countryList = data.map(c => {
-            const image = c.flags.png;
+        // Map countries → HTML
+        const countryList = countries.map(c => {
             return `
                 <div class="shadow rounded">
                     <div>
-                        <img class="pt-2" src="${image}" alt="${c.flags.alt}" style="max-width: 100%">
+                        <img class="pt-2" src="${c.flags.png}" alt="${c.flags.alt}" style="max-width: 100%">
                         <h3>${c.name.common}</h3>
                     </div>
                     <ul class="list-group list-decoration-none">
-                    <li class="list-group-item">Regio: ${c.continents}</li>
-                    <li class="list-group-item">Populatie: ${c.population}</l>
+                        <li class="list-group-item">Regio: ${c.region}</li>
+                        <li class="list-group-item">Populatie: ${c.population.toLocaleString()}</li>
                     </ul>
                     <div class="mt-2 mb-2 d-flex justify-content-between">
                         <button class="btn btn-primary">Details</button>
@@ -28,6 +28,7 @@ export async function showCountries() {
         });
 
         card.innerHTML = countryList.join("");
+
     } catch (err) {
         card.innerText = "❌ Kon JSON niet laden";
         console.error(err);
