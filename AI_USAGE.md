@@ -1,7 +1,8 @@
 ## 1. Landenlijst & filters
 
-AI gebruikt? ja/nee
+AI gebruikt? ja
 Omschrijving:
+Xanthe - AI probleem laten zoeken, een error met vreemde uitleg, probleem was inner geschreven als innner (3 n'en)
 
 ## 2. Detailmodal & kaart
 
