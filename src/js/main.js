@@ -8,7 +8,7 @@ import { fetchAllCountries } from "./services/countriesService.js";
 import { initMap } from "./services/mapService.js";
 import { loadFavorites, saveFavorites } from "./services/storageService.js";
 import { calculateStats } from "./services/statsService.js";
-// import { renderCountryList } from "./components/countryList.js";
+import {showCountries} from "./components/countryList";
 // import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
 // import { renderStats } from "./components/statsPanel.js";
 
@@ -25,15 +25,6 @@ const countriesCount = document.querySelector("#countries_count");
 const favoritesPanel = document.querySelector("#favorites_panel");
 const favoritesEmpty = document.querySelector("#favorites_empty");
 
-document.addEventListener("DOMContentLoaded", async () => {
-    initMap();
-    initCountryModal(handleFavoriteToggleFromModal);
-    favorites = loadFavorites();
-    setupFilterHandlers();
-    await loadCountries();
-    renderFavorites();
-    updateStats();
-});
 
 async function loadCountries() {
     setStatus("Landen worden geladen...", "warning");
@@ -71,7 +62,7 @@ function applyFilters() {
         return matchesName && matchesRegion;
     });
 
-    renderCountryList({
+    showCountries({
         countries: filteredCountries,
         favorites,
         onCountryClick: handleCountryClick,
@@ -160,3 +151,16 @@ function setStatus(message, type = "secondary") {
     statusMessage.textContent = message;
     statusMessage.className = `alert alert-${type} mb-0 py-2`;
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadCountries();
+});
+
+// document.addEventListener("DOMContentLoaded", async () => {
+//     initMap();
+//     initCountryModal(handleFavoriteToggleFromModal);
+//     favorites = loadFavorites();
+//     setupFilterHandlers();
+//     renderFavorites();
+//     updateStats();
+// });
