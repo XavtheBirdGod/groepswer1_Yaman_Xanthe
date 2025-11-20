@@ -1,4 +1,4 @@
-const COUNTRIES_API_URL = "https://restcountries.com/v3.1/all";
+const COUNTRIES_API_URL = "https://restcountries.com/v3.1/all?fields=name,capital,region,population,flags,latlng,languages,currencies,cca3";
 
 /**
  * Haalt alle landen op via de REST Countries API.
