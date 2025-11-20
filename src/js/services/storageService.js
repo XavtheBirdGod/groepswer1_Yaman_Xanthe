@@ -7,16 +7,25 @@ const STORAGE_KEY = "world-explorer-favorites";
 export function loadFavorites() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
-
-        // niks opgeslagen → lege array
         if (!raw) return [];
 
         const parsed = JSON.parse(raw);
-
-        // als data bullshit is → veilige fallback
         return Array.isArray(parsed) ? parsed : [];
     } catch (err) {
         console.error("loadFavorites() parse error:", err);
         return [];
+    }
+}
+
+/**
+ * Schrijf favorieten naar localStorage.
+ * @param {Array} favorites
+ */
+export function saveFavorites(favorites) {
+    try {
+        const json = JSON.stringify(favorites);
+        localStorage.setItem(STORAGE_KEY, json);
+    } catch (err) {
+        console.error("saveFavorites() failed:", err);
     }
 }

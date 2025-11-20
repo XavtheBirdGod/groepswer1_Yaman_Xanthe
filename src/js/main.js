@@ -8,9 +8,9 @@ import { fetchAllCountries } from "./services/countriesService.js";
 import { initMap } from "./services/mapService.js";
 import { loadFavorites, saveFavorites } from "./services/storageService.js";
 import { calculateStats } from "./services/statsService.js";
-import { renderCountryList } from "./components/countryList.js";
-import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
-import { renderStats } from "./components/statsPanel.js";
+// import { renderCountryList } from "./components/countryList.js";
+// import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
+// import { renderStats } from "./components/statsPanel.js";
 
 // Globale state
 let allCountries = [];
