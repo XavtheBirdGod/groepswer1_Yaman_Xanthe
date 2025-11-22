@@ -49,6 +49,14 @@ export async function fetchAllCountries() {
             country.exchangeRate = rate;
         });
 
+        // Currency debug!!
+
+        // console.log("DEBUG countries sample:", countries.slice(0, 5).map(c => ({
+        //     name: c.name?.common,
+        //     currencies: c.currencies,
+        //     exchangeRate: c.exchangeRate
+        // })));
+
         return countries;
 
     } catch (e) {
