@@ -19,6 +19,8 @@ export function showCountryDetail() {}
 // statsPanel.js
 export function renderStats() {}
 
+// import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
+// import { renderStats } from "./components/statsPanel.js";
 
 
 
