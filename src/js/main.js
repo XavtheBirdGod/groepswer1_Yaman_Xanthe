@@ -10,7 +10,7 @@ import { loadFavorites, saveFavorites } from "./services/storageService.js";
 import { calculateStats } from "./services/statsService.js";
 import {showCountries} from "./components/countryList";
 // import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
-// import { renderStats } from "./components/statsPanel.js";
+import { renderStats } from "./components/statsPanel.js";
 
 // Globale state
 let allCountries = [];
@@ -18,12 +18,12 @@ let filteredCountries = [];
 let favorites = [];
 
 // DOM refs
-const searchInput = document.querySelector("#search_input");
-const regionSelect = document.querySelector("#region_filter");
-const statusMessage = document.querySelector("#status_message");
-const countriesCount = document.querySelector("#countries_count");
-const favoritesPanel = document.querySelector("#favorites_panel");
-const favoritesEmpty = document.querySelector("#favorites_empty");
+const searchInput = document.getElementById("search_input");
+const regionSelect = document.getElementById("region_filter");
+const statusMessage = document.getElementById("status_message");
+const countriesCount = document.getElementById("countries_count");
+const favoritesPanel = document.getElementById("favorites_panel");
+const favoritesEmpty = document.getElementById("favorites_empty");
 
 
 async function loadCountries() {
@@ -92,10 +92,10 @@ function toggleFavorite(country) {
     const index = favorites.findIndex(fav => fav.cca3 === key);
 
     if (index >= 0) {
-        // Bestond al → verwijderen
+
         favorites.splice(index, 1);
     } else {
-        // Nieuw favoriet object (minimaal name, region, cca3)
+
         favorites.push({
             cca3: key,
             name: country.name?.common || "Onbekend",

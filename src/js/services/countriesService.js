@@ -14,7 +14,6 @@ export async function fetchAllCountries() {
         const countries = await resCountries.json();
         const rateData  = await resRates.json();
 
-        // attach exchange rates per country
         countries.forEach(country => {
             const currencyCode = Object.keys(country.currencies ?? {})[0] || null;
             country.exchangeRate = currencyCode ? rateData.rates[currencyCode] : null;
