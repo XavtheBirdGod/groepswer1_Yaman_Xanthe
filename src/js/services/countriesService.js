@@ -37,6 +37,7 @@ export async function fetchAllCountries() {
         }
 
         // Per land: probeer eerste currency-code op te halen en plak er een rate bij
+
         countries.forEach(country => {
             const currencies = country.currencies ?? {};
             const currencyCodes = Object.keys(currencies);
