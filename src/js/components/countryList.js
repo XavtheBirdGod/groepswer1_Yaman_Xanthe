@@ -1,14 +1,5 @@
 import { clearElement, createElement } from "../utils/dom.js";
 
-/**
- * Render de lijst van landen in #country_list.
- *
- * @param {Object} config
- * @param {Array}  config.countries
- * @param {Array}  config.favorites
- * @param {Function} config.onCountryClick   (country) => void
- * @param {Function} config.onFavoriteToggle (country) => void
- */
 export function renderCountryList({ countries, favorites, onCountryClick, onFavoriteToggle }) {
     const container = document.querySelector("#country_list");
     if (!container) return;
@@ -25,6 +16,7 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
         return;
     }
 
+    // Create a Set for faster lookup
     const favoriteSet = new Set((favorites ?? []).map(f => f.cca3));
 
     countries.forEach(country => {
@@ -42,22 +34,23 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
         const flagAlt = country.flags?.alt || `Vlag van ${name}`;
         const isFav = favoriteSet.has(country.cca3);
 
-        // Vlag
+        // 1. Vlag
         if (flagUrl) {
             const imgWrap = createElement("div", "mb-2 text-center");
             const img = document.createElement("img");
             img.src = flagUrl;
             img.alt = flagAlt;
             img.className = "img-fluid border rounded";
+            // Student B styling preservation:
             imgWrap.appendChild(img);
             body.appendChild(imgWrap);
         }
 
-        // Naam
+        // 2. Naam
         const titleEl = createElement("h5", "card-title mb-1", name);
         body.appendChild(titleEl);
 
-        // Regio + populatie
+        // 3. Regio + populatie
         const metaEl = createElement(
             "p",
             "card-text small text-muted mb-2",
@@ -65,7 +58,7 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
         );
         body.appendChild(metaEl);
 
-        // Knoppen onderaan
+        // 4. Knoppen onderaan
         const btnRow = createElement("div", "d-flex gap-2 mt-auto");
 
         const detailsBtn = createElement(
@@ -75,7 +68,7 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
         );
         detailsBtn.type = "button";
         detailsBtn.addEventListener("click", () => {
-            onCountryClick?.(country);
+            if (onCountryClick) onCountryClick(country);
         });
 
         const favBtn = createElement(
@@ -84,8 +77,9 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
             isFav ? "★ Favoriet" : "☆ Favoriet"
         );
         favBtn.type = "button";
-        favBtn.addEventListener("click", () => {
-            onFavoriteToggle?.(country);
+        favBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // Prevent card click issues
+            if (onFavoriteToggle) onFavoriteToggle(country);
         });
 
         btnRow.appendChild(detailsBtn);

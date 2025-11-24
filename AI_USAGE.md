@@ -11,8 +11,8 @@ Omschrijving:
 
 ## 3. Wisselkoers-API
 
-AI gebruikt? ja/nee
-Omschrijving:
+AI gebruikt? ja
+Omschrijving: AI gebruikt om te helpen bij het omzetten van de oude exchangerate.host API naar de werkende open.er-api.com API
 
 ## 4. Favorieten + localStorage
 

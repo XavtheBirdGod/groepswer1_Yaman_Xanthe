@@ -25,29 +25,50 @@ $custom-colors-border-subtle-dark: ("brand": #e1d2f2);
 
 $theme-colors-text-dark: map-merge($theme-colors-text-dark, $custom-colors-text-dark);
 $theme-colors-bg-subtle-dark: map-merge($theme-colors-bg-subtle-dark, $custom-colors-bg-subtle-dark);
-$theme-colors-border-subtle-dark:
-        map-merge($theme-colors-border-subtle-dark, $custom-colors-border-subtle-dark);
+$theme-colors-border-subtle-dark: map-merge($theme-colors-border-subtle-dark, $custom-colors-border-subtle-dark);
 
 // 6) Utilities & componenten
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
+// This imports the full bootstrap framework using the new variables
 @import "bootstrap/scss/bootstrap";
 
-@import "bootstrap";
+// Custom Page Styles
 body {
   background-color: #f8f9fa;
 }
+
 .card {
   border-radius: 0.6rem;
 }
+
 #country_map {
   height: 100%;
   width: 100%;
+  min-height: 300px; /* Safety height */
+  z-index: 1; /* Fixes some leaflet stacking issues in modals */
 }
+
+/* Stats bars - Required for statsPanel.js */
 .bar-chart-row {
+  display: flex;
   align-items: flex-end;
+  justify-content: center;
+  height: 150px; /* Increased slightly for better visual */
+  padding: 0.25rem;
+  gap: 1.5rem; /* More space between bars */
+  border-bottom: 1px solid #dee2e6;
 }
+
 .bar {
-  width: 100%;
+  width: 40px;
   border-radius: 0.25rem 0.25rem 0 0;
+  transition: height 500ms cubic-bezier(.2,.8,.2,1);
+  min-height: 4px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+  /* Ensure the custom brand color works if bootstrap utilities fail */
+  &.bg-brand {
+    background-color: orange !important;
+  }
 }
