@@ -1,4 +1,4 @@
-import * as bootstrap from "bootstrap"; // FIXED: Explicit import needed!
+import * as bootstrap from "bootstrap";
 import { focusCountry } from "../services/mapService.js";
 import { fetchRateToEuro } from "../services/statsService.js";
 
@@ -37,7 +37,7 @@ export function initCountryModal(favToggleCallback) {
 
             // Optimistic UI update
             const isNowFav = favoriteBtn.classList.contains("btn-outline-warning");
-            updateFavoriteButton(!isNowFav); // Toggle visual state immediately
+            updateFavoriteButton(!isNowFav);
         });
     }
 
@@ -101,7 +101,6 @@ export async function showCountryDetail(country, favorite = false) {
         const code = Object.keys(currencies)[0];
 
         if (code) {
-            // Use pre-fetched rate if available, otherwise fetch new
             let rate = country.exchangeRate;
             if (typeof rate !== "number") {
                 rate = await fetchRateToEuro(code);

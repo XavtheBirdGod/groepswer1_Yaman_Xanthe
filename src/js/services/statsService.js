@@ -1,12 +1,9 @@
-// FIXED: Using the reliable API endpoint (same as countriesService)
 const EXCHANGE_API_BASE = "https://open.er-api.com/v6/latest/EUR";
 
 export async function fetchRateToEuro(currencyCode) {
     try {
         if (!currencyCode || typeof currencyCode !== "string") return null;
 
-        // The new API returns ALL rates relative to EUR.
-        // We fetch the whole list and pick the one we need.
         const res = await fetch(EXCHANGE_API_BASE);
         if (!res.ok) return null;
 

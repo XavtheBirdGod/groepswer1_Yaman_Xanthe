@@ -16,7 +16,6 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
         return;
     }
 
-    // Create a Set for faster lookup
     const favoriteSet = new Set((favorites ?? []).map(f => f.cca3));
 
     countries.forEach(country => {
@@ -78,7 +77,7 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
         );
         favBtn.type = "button";
         favBtn.addEventListener("click", (e) => {
-            e.stopPropagation(); // Prevent card click issues
+            e.stopPropagation();
             if (onFavoriteToggle) onFavoriteToggle(country);
         });
 

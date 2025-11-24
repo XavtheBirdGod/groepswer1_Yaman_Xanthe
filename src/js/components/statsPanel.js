@@ -4,7 +4,6 @@ export function renderStats(stats = {}) {
     const panel = document.getElementById("stats_panel");
     if (!panel) return;
 
-    // Clear previous content
     panel.innerHTML = "";
 
     const {
@@ -13,17 +12,12 @@ export function renderStats(stats = {}) {
         favoritesPopulation = 0
     } = stats;
 
-    // Helper to keep bars within 0-100%
     const clampPercent = v => Math.max(0, Math.min(100, Math.round(v)));
 
-    // Calculate percentages (Logic from Student A)
-    // We use arbitrary baselines for the visualization (250 countries, 100M pop, etc.)
     const pctCountries = clampPercent((totalCountries / 250) * 100);
     const pctAverage = clampPercent((averagePopulation / 100_000_000) * 100);
     const pctFavorites = clampPercent((favoritesPopulation / 100_000_000) * 100);
 
-    // RESTORED: The original HTML structure with 6 columns (3 for text, 3 for bars)
-    // or the structure defined in your uploaded statsPanel.js file
     panel.innerHTML = `
         <div class="col-md-4">
             <div class="card p-3 text-center h-100">

@@ -1,8 +1,5 @@
 // Import CSS (handled by Vite)
 import "../scss/styles.scss";
-
-// Import Bootstrap JS (required for modal logic to work globally if needed,
-// though we imported it specifically in the modal component too)
 import * as bootstrap from "bootstrap";
 
 import { fetchAllCountries } from "./services/countriesService.js";
@@ -28,7 +25,7 @@ const favoritesEmpty = document.getElementById("favorites_empty");
 
 document.addEventListener("DOMContentLoaded", async () => {
     initMap();
-    initCountryModal(handleFavoriteToggle); // Bind callback
+    initCountryModal(handleFavoriteToggle);
 
     favorites = loadFavorites();
 
@@ -106,9 +103,8 @@ function handleFavoriteToggle(country) {
 
     saveFavorites(favorites);
     renderFavoritesList();
-    applyFilters(); // Re-render list to update star icons
+    applyFilters();
 
-    // If modal is open, update the button there too (handled by optimistic UI in modal, but this ensures state sync)
 }
 
 function isFavorite(country) {

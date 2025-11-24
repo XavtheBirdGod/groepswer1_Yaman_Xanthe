@@ -8,7 +8,6 @@ export function initMap() {
     const mapContainer = document.querySelector("#country_map");
     if (!mapContainer) return;
 
-    // Center view on the world
     map = L.map(mapContainer).setView([20, 0], 2);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -24,10 +23,8 @@ export function focusCountry(lat, lng, name) {
         return;
     }
 
-    // Zoom in (level 5 is usually good for countries)
     map.setView([lat, lng], 5);
 
-    // Remove old marker if exists
     if (marker) {
         map.removeLayer(marker);
     }
