@@ -1,7 +1,8 @@
-// Import our custom CSS
+// Import CSS (handled by Vite)
 import "../scss/styles.scss";
 
-// Import all of Bootstrap’s JS
+// Import Bootstrap JS (required for modal logic to work globally if needed,
+// though we imported it specifically in the modal component too)
 import * as bootstrap from "bootstrap";
 
 import { fetchAllCountries } from "./services/countriesService.js";
@@ -9,24 +10,15 @@ import { initMap } from "./services/mapService.js";
 import { loadFavorites, saveFavorites } from "./services/storageService.js";
 import { calculateStats } from "./services/statsService.js";
 import { renderCountryList } from "./components/countryList.js";
-
-// Dummy functions, die moeten nog verwerkt zijn!!
-
-// countryDetailModal.js
-export function initCountryModal() {}
-export function showCountryDetail() {}
-
-// statsPanel.js
-
-// import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
+import { initCountryModal, showCountryDetail } from "./components/countryDetailModal.js";
 import { renderStats } from "./components/statsPanel.js";
 
-// Globale state
+// Global State
 let allCountries = [];
 let filteredCountries = [];
 let favorites = [];
 
-// DOM refs
+// DOM Elements
 const searchInput = document.getElementById("search_input");
 const regionSelect = document.getElementById("region_filter");
 const statusMessage = document.getElementById("status_message");
@@ -36,13 +28,15 @@ const favoritesEmpty = document.getElementById("favorites_empty");
 
 document.addEventListener("DOMContentLoaded", async () => {
     initMap();
-    initCountryModal(handleFavoriteToggleFromModal);
+    initCountryModal(handleFavoriteToggle); // Bind callback
 
     favorites = loadFavorites();
 
     setupFilterHandlers();
+
     await loadCountries();
-    renderFavorites();
+
+    renderFavoritesList();
     updateStats();
 });
 
@@ -50,22 +44,18 @@ async function loadCountries() {
     setStatus("Landen worden geladen...", "warning");
     try {
         allCountries = await fetchAllCountries();
-        filteredCountries = allCountries;
+        filteredCountries = [...allCountries];
         applyFilters();
         setStatus("Landen succesvol geladen.", "success");
     } catch (error) {
         console.error(error);
-        setStatus("Fout bij het laden van landen. Probeer later opnieuw.", "danger");
+        setStatus("Fout bij het laden van landen.", "danger");
     }
 }
 
 function setupFilterHandlers() {
-    if (searchInput) {
-        searchInput.addEventListener("input", applyFilters);
-    }
-    if (regionSelect) {
-        regionSelect.addEventListener("change", applyFilters);
-    }
+    if (searchInput) searchInput.addEventListener("input", applyFilters);
+    if (regionSelect) regionSelect.addEventListener("change", applyFilters);
 }
 
 function applyFilters() {
@@ -75,10 +65,7 @@ function applyFilters() {
     filteredCountries = allCountries.filter(country => {
         const name = country.name?.common?.toLowerCase() || "";
         const matchesName = name.includes(term);
-
-        const matchesRegion =
-            region === "all" || country.region === region;
-
+        const matchesRegion = region === "all" || country.region === region;
         return matchesName && matchesRegion;
     });
 
@@ -86,75 +73,68 @@ function applyFilters() {
         countries: filteredCountries,
         favorites,
         onCountryClick: handleCountryClick,
-        onFavoriteToggle: handleFavoriteToggleFromList
+        onFavoriteToggle: handleFavoriteToggle
     });
 
-    countriesCount.textContent = `${filteredCountries.length} landen`;
+    if (countriesCount) countriesCount.textContent = `${filteredCountries.length} landen`;
     updateStats();
 }
 
 function handleCountryClick(country) {
-    showCountryDetail(country, isFavorite(country));
+    const isFav = isFavorite(country);
+    showCountryDetail(country, isFav);
 }
 
-function handleFavoriteToggleFromList(country) {
-    toggleFavorite(country);
-}
-
-function handleFavoriteToggleFromModal(country) {
-    toggleFavorite(country);
-}
-
-function toggleFavorite(country) {
+function handleFavoriteToggle(country) {
     if (!country || !country.cca3) return;
 
     const key = country.cca3;
     const index = favorites.findIndex(fav => fav.cca3 === key);
 
     if (index >= 0) {
-
+        // Remove
         favorites.splice(index, 1);
     } else {
-
+        // Add (store only necessary data to save space)
         favorites.push({
             cca3: key,
-            name: country.name?.common || "Onbekend",
-            region: country.region || "Onbekend",
+            name: country.name?.common || "Unknown",
+            region: country.region || "Unknown",
             population: country.population ?? 0
         });
     }
 
     saveFavorites(favorites);
-    renderFavorites();
-    updateStats();
+    renderFavoritesList();
+    applyFilters(); // Re-render list to update star icons
+
+    // If modal is open, update the button there too (handled by optimistic UI in modal, but this ensures state sync)
 }
 
 function isFavorite(country) {
-    const key = country.cca3;
-    return favorites.some(fav => fav.cca3 === key);
+    return favorites.some(fav => fav.cca3 === country.cca3);
 }
 
-function renderFavorites() {
+function renderFavoritesList() {
     if (!favoritesPanel) return;
     favoritesPanel.innerHTML = "";
 
     if (!favorites || favorites.length === 0) {
-        favoritesEmpty.classList.remove("d-none");
+        favoritesEmpty?.classList.remove("d-none");
         return;
     }
 
-    favoritesEmpty.classList.add("d-none");
+    favoritesEmpty?.classList.add("d-none");
 
     favorites.forEach(fav => {
         const li = document.createElement("li");
-        li.className = "list-group-item d-flex justify-content-between align-items-center";
-        li.textContent = `${fav.name} (${fav.region})`;
+        li.className = "list-group-item list-group-item-action d-flex justify-content-between align-items-center cursor-pointer";
+        li.style.cursor = "pointer";
+        li.innerHTML = `<span>${fav.name}</span> <span class="badge bg-secondary rounded-pill">${fav.region}</span>`;
 
         li.addEventListener("click", () => {
             const country = allCountries.find(c => c.cca3 === fav.cca3);
-            if (country) {
-                handleCountryClick(country);
-            }
+            if (country) handleCountryClick(country);
         });
 
         favoritesPanel.appendChild(li);

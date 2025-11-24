@@ -4,47 +4,37 @@ import "leaflet/dist/leaflet.css";
 let map;
 let marker;
 
-/**
- * Initialiseert de Leaflet-kaart in #country_map.
- */
 export function initMap() {
     const mapContainer = document.querySelector("#country_map");
     if (!mapContainer) return;
 
-    // Maak kaart + wereld view
+    // Center view on the world
     map = L.map(mapContainer).setView([20, 0], 2);
 
-    // Voeg OpenStreetMap tiles toe
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; OpenStreetMap-bijdragers'
+        attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 }
 
-/**
- * Zoomt in op een bepaald land en toont een marker met naam.
- * @param {number} lat
- * @param {number} lng
- * @param {string} name
- */
 export function focusCountry(lat, lng, name) {
     if (!map) return;
 
     if (typeof lat !== "number" || typeof lng !== "number") {
-        console.warn("Ongeldige coördinaten voor focusCountry");
+        console.warn("Invalid coordinates for focusCountry");
         return;
     }
 
-    // Zoom in op het land
+    // Zoom in (level 5 is usually good for countries)
     map.setView([lat, lng], 5);
 
-    // Oude marker verwijderen
+    // Remove old marker if exists
     if (marker) {
         map.removeLayer(marker);
     }
 
-    // Nieuwe marker
+    // Add new marker
     marker = L.marker([lat, lng])
         .addTo(map)
-        .bindPopup(name || "Onbekend land")
+        .bindPopup(name || "Unknown Location")
         .openPopup();
 }
