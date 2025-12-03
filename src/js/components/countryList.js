@@ -6,22 +6,90 @@ export function renderCountryList({ countries, favorites, onCountryClick, onFavo
 
     clearElement(container);
 
-    // TODO: Student B
-    // 1. Controleer of de lijst 'countries' leeg is.
-    //    - Zo ja: toon een melding (bijv. "Geen landen gevonden").
+    if (!countries?.length) {
+        container.appendChild(
+            createElement(
+                "div",
+                "col-12 alert alert-light border text-center mb-0",
+                "Geen landen gevonden voor deze filter."
+            )
+        );
+        return;
+    }
 
-    // 2. Loop over alle landen in de 'countries' array.
+    const favoriteSet = new Set(favorites?.map(f => f.cca3));
 
-    // 3. Voor elk land:
-    //    - Maak de HTML-structuur voor een kaart (gebruik createElement en Bootstrap classes).
-    //    - Toon de Vlag, Naam, Regio en Populatie.
-    //    - Controleer of het land in 'favorites' zit om de knopstijl te bepalen (wel/niet favoriet).
+    countries.forEach(country => {
+        const {
+            cca3,
+            name: { common: name = "Onbekend" } = {},
+            region = "Onbekend",
+            population,
+            flags = {}
+        } = country;
 
-    // 4. Voeg event listeners toe:
-    //    - Klik op "Details" -> roep onCountryClick(country) aan.
-    //    - Klik op "Favoriet" -> roep onFavoriteToggle(country) aan.
+        const isFav = favoriteSet.has(cca3);
+        const populationText =
+            typeof population === "number"
+                ? population.toLocaleString("nl-BE")
+                : "Onbekend";
 
-    // 5. Voeg de kaart toe aan de container.
+        const flagUrl = flags.png || flags.svg || "";
+        const flagAlt = flags.alt || `Vlag van ${name}`;
 
-    console.log("renderCountryList aangeroepen met:", countries.length, "landen");
+        const col = createElement("div", "col");
+        const card = createElement("div", "card h-100 shadow-sm border-0");
+        const body = createElement("div", "card-body d-flex flex-column");
+
+        if (flagUrl) {
+            const img = createElement("img", "img-fluid border rounded");
+            img.src = flagUrl;
+            img.alt = flagAlt;
+
+            const imgWrap = createElement("div", "mb-2 text-center");
+            imgWrap.appendChild(img);
+            body.appendChild(imgWrap);
+        }
+
+        body.appendChild(createElement("h5", "card-title mb-1", name));
+        body.appendChild(
+            createElement(
+                "p",
+                "card-text small text-muted mb-2",
+                `${region} • ${populationText} inwoners`
+            )
+        );
+
+
+        const btnRow = createElement("div", "d-flex gap-2 mt-auto");
+
+        const detailsBtn = createButton(
+            "btn btn-sm btn-primary flex-grow-1",
+            "Details",
+            () => onCountryClick?.(country)
+        );
+
+        const favBtn = createButton(
+            `btn btn-sm ${isFav ? "btn-warning" : "btn-outline-warning"}`,
+            isFav ? "★ Favoriet" : "☆ Favoriet",
+            (e) => {
+                e.stopPropagation();
+                onFavoriteToggle?.(country);
+            }
+        );
+
+        btnRow.append(detailsBtn, favBtn);
+
+        body.appendChild(btnRow);
+        card.appendChild(body);
+        col.appendChild(card);
+        container.appendChild(col);
+    });
+}
+
+function createButton(classes, text, handler) {
+    const btn = createElement("button", classes, text);
+    btn.type = "button";
+    btn.addEventListener("click", handler);
+    return btn;
 }
