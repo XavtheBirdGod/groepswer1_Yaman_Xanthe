@@ -15,6 +15,12 @@ export function initMap() {
     }).addTo(map);
 }
 
+export function invalidateMapSize() {
+    if (map) {
+        map.invalidateSize();
+    }
+}
+
 export function focusCountry(lat, lng, name) {
     if (!map) return;
 

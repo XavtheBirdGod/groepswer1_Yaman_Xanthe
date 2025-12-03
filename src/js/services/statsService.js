@@ -28,6 +28,11 @@ export function calculateStats(countries, favorites) {
         return sum + pop;
     }, 0);
 
+    const maxPopulation = safeCountries.reduce((max, c) => {
+        const pop = typeof c.population === "number" ? c.population : 0;
+        return Math.max(max, pop);
+    }, 0);
+
     const averagePopulation = totalCountries > 0
         ? Math.round(totalPopulation / totalCountries)
         : 0;
@@ -40,6 +45,7 @@ export function calculateStats(countries, favorites) {
     return {
         totalCountries,
         averagePopulation,
-        favoritesPopulation
+        favoritesPopulation,
+        maxPopulation
     };
 }

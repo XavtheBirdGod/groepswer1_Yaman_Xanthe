@@ -9,14 +9,18 @@ export function renderStats(stats = {}) {
     const {
         totalCountries = 0,
         averagePopulation = 0,
-        favoritesPopulation = 0
+        favoritesPopulation = 0,
+        maxPopulation = 0
     } = stats;
 
     const clamp = v => Math.max(0, Math.min(100, Math.round(v)));
 
     const pctCountries = clamp((totalCountries / 250) * 100);
-    const pctAverage = clamp((averagePopulation / 100_000_000) * 100);
-    const pctFavorites = clamp((favoritesPopulation / 100_000_000) * 100);
+
+    const popScaleBase = Math.max(maxPopulation, favoritesPopulation, 1);
+
+    const pctAverage = clamp((averagePopulation / popScaleBase) * 100);
+    const pctFavorites = clamp((favoritesPopulation / popScaleBase) * 100);
 
     const statCard = (label, value) => `
         <div class="col-md-4">
@@ -41,8 +45,8 @@ export function renderStats(stats = {}) {
 
     panel.innerHTML = [
         statCard("Aantal landen", totalCountries),
-        statCard("Gemiddelde populatie", averagePopulation.toLocaleString("nl-BE")),
-        statCard("Totale populatie favorieten", favoritesPopulation.toLocaleString("nl-BE")),
+        statCard("Gem. populatie", averagePopulation.toLocaleString("nl-BE")),
+        statCard("Pop. favorieten", favoritesPopulation.toLocaleString("nl-BE")),
 
         barCard("Aantal landen", pctCountries, "bg-primary"),
         barCard("Gem. populatie", pctAverage, "bg-success"),
