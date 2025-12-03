@@ -1,5 +1,5 @@
 import * as bootstrap from "bootstrap";
-import { focusCountry } from "../services/mapService.js";
+import { focusCountry, invalidateMapSize } from "../services/mapService.js";
 import { fetchRateToEuro } from "../services/statsService.js";
 
 let bootstrapModal = null;
@@ -26,6 +26,10 @@ export function initCountryModal(favToggleCallback) {
     } catch (e) {
         console.warn("Bootstrap Modal creation failed:", e);
     }
+
+    modalEl.addEventListener('shown.bs.modal', () => {
+        invalidateMapSize();
+    });
 
     if (favoriteBtn) {
         favoriteBtn.addEventListener("click", () => {
@@ -94,6 +98,7 @@ export async function showCountryDetail(country, favorite = false) {
 
         if (code) {
             let rate = country.exchangeRate;
+            // Fallback: fetch if not pre-loaded (robustness)
             if (typeof rate !== "number") {
                 rate = await fetchRateToEuro(code);
             }
